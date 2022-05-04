@@ -8,6 +8,9 @@ export function Checkout() {
   const [product, setProduct] = useState({
     name: "Jordan 1 Bred",
     description: "Air Jordan 1 in black/red colorway",
+    images: [
+      'https://images.unsplash.com/photo-1559252676-c735ac416188?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'
+    ],
     amount: "599",
     currency: "usd",
     quantity: 0,
