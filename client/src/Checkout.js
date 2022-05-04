@@ -20,7 +20,7 @@ export function Checkout() {
     setProduct({ ...product, quantity: Math.max(0, product.quantity + v)});
 
   const handleClick = async (event) => {
-    const body = { line_items: [] }
+    const body = { line_items: [product] }
     const { id: sessionId } = await fetchFromAPI("checkouts", {
       body
     })

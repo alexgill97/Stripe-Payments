@@ -3,11 +3,18 @@ export const app = express();
 
 import cors from 'cors';
 import { createStripeCheckoutSession } from "./checkout"
+import { createPaymentIntent } from "./payments";
 
-
-
+// Allow cross origin requests
 app.use(cors({ origin: true }));
-app.use(express.json());
+
+
+// Sets rawBody for webhook handler
+app.use(
+  express.json({
+    verify: (req, res, buffer) => (req['rawBody'] = buffer)
+  })
+)
 
 
 app.post('/test', (req: Request, res: Response) => {
@@ -25,7 +32,15 @@ app.post(
 
     )
   })
-)
+);
+
+// Payment Intent
+app.post(
+  '/payments',
+  runAsync(async ({ body }: Request, res: Response) => {
+    res.send(await createPaymentIntent(body.amount))
+  })
+);
 
 
 function runAsync(callback: Function) {
