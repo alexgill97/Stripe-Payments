@@ -19,6 +19,7 @@ export default function Payments() {
     // Make the API Request
     const pi = await fetchFromAPI('payments', { body: { amount: validAmount } });
     setPaymentIntent(pi);
+    
   };
 
   // Handle the submission of card details
@@ -40,6 +41,7 @@ export default function Payments() {
       error.payment_intent && setPaymentIntent(error.payment_intent);
     } else {
       setPaymentIntent(updatedPaymentIntent);
+      console.log(paymentIntent)
     }
   };
 

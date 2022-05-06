@@ -20,7 +20,7 @@ exports.handleStripeWebhook = async (req, res) => {
     }
     catch (err) {
         console.error(err);
-        res.status(400).send(`Webhook Error: ${err}`);
+        res.status(400).send(`Webhook Error: ${err.message}`);
     }
 };
 //# sourceMappingURL=webhooks.js.map

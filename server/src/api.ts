@@ -4,6 +4,7 @@ export const app = express();
 import cors from 'cors';
 import { createStripeCheckoutSession } from "./checkout"
 import { createPaymentIntent } from "./payments";
+import { handleStripeWebhook } from './webhooks';
 
 // Allow cross origin requests
 app.use(cors({ origin: true }));
@@ -41,6 +42,10 @@ app.post(
     res.send(await createPaymentIntent(body.amount))
   })
 );
+
+// Webhooks
+app.post('/hooks', runAsync(handleStripeWebhook))
+
 
 
 function runAsync(callback: Function) {

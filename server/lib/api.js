@@ -9,6 +9,7 @@ exports.app = express_1.default();
 const cors_1 = __importDefault(require("cors"));
 const checkout_1 = require("./checkout");
 const payments_1 = require("./payments");
+const webhooks_1 = require("./webhooks");
 // Allow cross origin requests
 exports.app.use(cors_1.default({ origin: true }));
 // Sets rawBody for webhook handler
@@ -28,6 +29,8 @@ exports.app.post("/checkouts/", runAsync(async ({ body }, res) => {
 exports.app.post('/payments', runAsync(async ({ body }, res) => {
     res.send(await payments_1.createPaymentIntent(body.amount));
 }));
+// Webhooks
+exports.app.post('/hooks', runAsync(webhooks_1.handleStripeWebhook));
 function runAsync(callback) {
     return (req, res, next) => {
         callback(req, res, next).catch(next);
