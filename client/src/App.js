@@ -8,7 +8,6 @@ import Customers from './Customers';
 import Subscriptions from './Subscriptions';
 
 
-
 function App() {
   return (
     <Router>
