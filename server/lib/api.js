@@ -11,6 +11,7 @@ const checkout_1 = require("./checkout");
 const payments_1 = require("./payments");
 const webhooks_1 = require("./webhooks");
 const firebase_admin_1 = require("firebase-admin");
+const customers_1 = require("./customers");
 // == MIDDLEWARE ==
 // Allow cross origin requests
 //
@@ -69,4 +70,11 @@ exports.app.post('/payments', runAsync(async ({ body }, res) => {
 // Webhooks
 //
 exports.app.post('/hooks', runAsync(webhooks_1.handleStripeWebhook));
+// Customers and setup intent
+//
+exports.app.post('/wallet', runAsync(async (req, res) => {
+    const user = validateUser(req);
+    const setupIntent = await customers_1.createSetupIntent(user.uid);
+    res.send(setupIntent);
+}));
 //# sourceMappingURL=api.js.map

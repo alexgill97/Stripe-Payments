@@ -6,6 +6,7 @@ import { createStripeCheckoutSession } from "./checkout"
 import { createPaymentIntent } from "./payments";
 import { handleStripeWebhook } from './webhooks';
 import { auth } from 'firebase-admin';
+import { createSetupIntent } from './customers';
 
 
 // == MIDDLEWARE ==
@@ -89,6 +90,17 @@ app.post(
 // Webhooks
 //
 app.post('/hooks', runAsync(handleStripeWebhook))
+
+// Customers and setup intent
+//
+app.post(
+  '/wallet',
+  runAsync(async (req: Request, res: Response) => {
+    const user = validateUser(req);
+    const setupIntent = await createSetupIntent(user.uid);
+    res.send(setupIntent); 
+  })
+)
 
 
 
