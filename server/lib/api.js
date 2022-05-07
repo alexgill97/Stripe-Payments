@@ -27,10 +27,12 @@ exports.app.use(decodeJWT);
 //
 async function decodeJWT(req, res, next) {
     var _a, _b;
+    console.log(req.headers);
     if ((_b = (_a = req.headers) === null || _a === void 0 ? void 0 : _a.authorization) === null || _b === void 0 ? void 0 : _b.startsWith('Bearer ')) {
         const idToken = req.headers.authorization.split('Bearer ')[1];
+        console.log(idToken);
         try {
-            const decodedToken = await firebase_admin_1.auth.verifyIdToken(idToken);
+            const decodedToken = await firebase_admin_1.auth().verifyIdToken(idToken);
             req['currentUser'] = decodedToken;
         }
         catch (err) {
@@ -47,6 +49,7 @@ function runAsync(callback) {
 }
 function validateUser(req) {
     const user = req['currentUser'];
+    console.log(user);
     if (!user) {
         throw new Error('You must be logged in to make this request. i.e Authorization: Bearer <token>');
     }

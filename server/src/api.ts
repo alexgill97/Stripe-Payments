@@ -30,11 +30,13 @@ app.use(decodeJWT);
 // Decode JSON web token from front end => make currentUser data available
 //
 async function decodeJWT(req: Request, res: Response, next: NextFunction) {
+  console.log(req.headers)
   if (req.headers?.authorization?.startsWith('Bearer ')) {
     const idToken = req.headers.authorization.split('Bearer ')[1];
+    console.log(idToken)
 
     try {
-      const decodedToken = await auth.verifyIdToken(idToken);
+      const decodedToken = await auth().verifyIdToken(idToken);
       req['currentUser'] = decodedToken;
     } catch (err) {
       console.log(err);
@@ -53,6 +55,7 @@ function runAsync(callback: Function) {
 
 function validateUser(req: Request) {
   const user = req['currentUser'];
+  console.log(user)
   if (!user) {
     throw new Error(
       'You must be logged in to make this request. i.e Authorization: Bearer <token>'
@@ -105,6 +108,7 @@ app.post(
 app.get(
   '/wallet',
   runAsync(async (req: Request, res: Response) => {
+
     const user = validateUser(req);
 
     const wallet = await listPaymentMethods(user.uid);

@@ -1,5 +1,5 @@
-const API = 'http://localhost:3333';
 import { auth } from './firebase';
+const API = 'http://localhost:3333';
 
 
 export async function fetchFromAPI(endpointURL, opts) {
@@ -13,7 +13,7 @@ export async function fetchFromAPI(endpointURL, opts) {
     ...(body && { body: JSON.stringify(body) }),
     headers: {
       "Content-Type": "application/json",
-      Authorizaton: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 
