@@ -77,4 +77,9 @@ exports.app.post('/wallet', runAsync(async (req, res) => {
     const setupIntent = await customers_1.createSetupIntent(user.uid);
     res.send(setupIntent);
 }));
+exports.app.get('/wallet', runAsync(async (req, res) => {
+    const user = validateUser(req);
+    const wallet = await customers_1.listPaymentMethods(user.uid);
+    res.send(wallet.data);
+}));
 //# sourceMappingURL=api.js.map

@@ -53,7 +53,7 @@ function SaveCard(props) {
     }
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const cardElement = elements.getElement(CardElement)
@@ -110,7 +110,7 @@ function CreditCard(props) {
   const { last4, brand, exp_month, exp_year } = props.card;
   return (
     <option>
-      {brand} **** **** **** {last4} expires {exp_month}/{exp/year}
+      {brand} **** **** **** {last4} expires {exp_month}/{exp_year}
     </option>
   )
 }

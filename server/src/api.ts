@@ -6,7 +6,7 @@ import { createStripeCheckoutSession } from "./checkout"
 import { createPaymentIntent } from "./payments";
 import { handleStripeWebhook } from './webhooks';
 import { auth } from 'firebase-admin';
-import { createSetupIntent } from './customers';
+import { createSetupIntent, listPaymentMethods } from './customers';
 
 
 // == MIDDLEWARE ==
@@ -99,6 +99,16 @@ app.post(
     const user = validateUser(req);
     const setupIntent = await createSetupIntent(user.uid);
     res.send(setupIntent); 
+  })
+)
+
+app.get(
+  '/wallet',
+  runAsync(async (req: Request, res: Response) => {
+    const user = validateUser(req);
+
+    const wallet = await listPaymentMethods(user.uid);
+    res.send(wallet.data);
   })
 )
 
