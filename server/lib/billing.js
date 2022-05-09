@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancelSubscription = exports.createSubscription = void 0;
+exports.listSubscriptions = exports.cancelSubscription = exports.createSubscription = void 0;
 const _1 = require(".");
 const firebase_1 = require("./firebase");
 const customers_1 = require("./customers");
@@ -35,7 +35,7 @@ async function cancelSubscription(userId, subscriptionId) {
     if (customer.metadata.firebaseUID !== userId) {
         throw Error('Firebase UID does not match Stripe Customer');
     }
-    const subscription = await _1.stripe.subscriptions.del(subscriptionId);
+    const subscription = _1.stripe.subscriptions.update(subscriptionId, { cancel_at_period_end: true });
     if (subscription.status === 'canceled') {
         await firebase_1.db
             .collection('users')
@@ -47,4 +47,14 @@ async function cancelSubscription(userId, subscriptionId) {
     return subscription;
 }
 exports.cancelSubscription = cancelSubscription;
+;
+async function listSubscriptions(userId) {
+    const customer = await customers_1.getOrCreateCustomer(userId);
+    const subscriptions = await _1.stripe.subscriptions.list({
+        customer: customer.id
+    });
+    return subscriptions;
+}
+exports.listSubscriptions = listSubscriptions;
+;
 //# sourceMappingURL=billing.js.map
