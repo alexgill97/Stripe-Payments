@@ -23,4 +23,42 @@ export async function createSubscription(
     expand: ['latest_invoice.payment_intent'],
   })
 
+  const invoice = subscription.latest_invoice as Stripe.Invoice;
+  const payment_intent = invoice.payment_intent as Stripe.PaymentIntent;
+
+  if (payment_intent.status === 'succeeded') {
+    await db
+      .collection('users')
+      .doc(userId)
+      .set({
+        stripeCustomerId: customer.id,
+        activePlans: firestore.FieldValue.arrayUnion(plan)
+      },
+      { merge: true }
+    )
+  }
+
+  return subscription
+
+}
+
+export async function cancelSubscription(
+  userId: string,
+  subscriptionId: string
+  ) {
+    const customer = await getOrCreateCustomer(userId);
+    if (customer.metadata.firebaseUID !== userId) {
+      throw Error('Firebase UID does not match Stripe Customer');
+    }
+    const subscription = await stripe.subscriptions.del(subscriptionId)
+  
+    if (subscription.status === 'canceled') {
+      await db 
+      .collection('users')
+      .doc(userId)
+      .update({
+        activePlans: firestore.FieldValue.arrayRemove(subscription.plan.id)
+      })
+    }
+  return subscription;
 }

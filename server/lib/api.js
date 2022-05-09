@@ -87,10 +87,23 @@ exports.app.get('/wallet', runAsync(async (req, res) => {
     const wallet = await customers_1.listPaymentMethods(user.uid);
     res.send(wallet.data);
 }));
+// Create subscription
+//
 exports.app.post('/subscriptions/', runAsync(async (req, res) => {
     const user = validateUser(req);
     const { plan, payment_method } = req.body;
     const subscription = await billing_1.createSubscription(user.uid, plan, payment_method);
     res.send(subscription);
+}));
+//Get subscriptions
+//
+exports.app.get('/subscriptions', runAsync(async (req, res) => {
+    const user = validateUser(req);
+    const subscriptions = await billing_1.listSubscriptions(user.uid);
+    res.send(subscriptions.data);
+}));
+exports.app.patch('/subscriptions/:id', runAsync(async (req, res) => {
+    const user = validateUser(req);
+    res.send(await billing_1.cancelSubscription(user.uid, req.params.id));
 }));
 //# sourceMappingURL=api.js.map

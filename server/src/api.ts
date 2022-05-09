@@ -7,7 +7,7 @@ import { createPaymentIntent } from "./payments";
 import { handleStripeWebhook } from './webhooks';
 import { auth } from 'firebase-admin';
 import { createSetupIntent, listPaymentMethods } from './customers';
-import { createSubscription } from './billing';
+import { cancelSubscription, createSubscription, listSubscriptions } from './billing';
 
 
 // == MIDDLEWARE ==
@@ -118,6 +118,8 @@ app.get(
   })
 )
 
+// Create subscription
+//
 app.post(
   '/subscriptions/',
   runAsync(async (req: Request, res: Response) => {
@@ -126,5 +128,23 @@ app.post(
     const subscription = await createSubscription(user.uid, plan, payment_method);
     res.send(subscription);
   })
-)
+);
 
+//Get subscriptions
+//
+app.get(
+  '/subscriptions',
+  runAsync(async (req: Request, res: Response) => {
+    const user = validateUser(req);
+    const subscriptions = await listSubscriptions(user.uid)
+    res.send(subscriptions.data);
+  })
+);
+
+app.patch(
+  '/subscriptions/:id',
+  runAsync(async (req: Request, res: Response) => {
+    const user = validateUser(req);
+    res.send(await cancelSubscription(user.uid, req.params.id));
+  })
+);
