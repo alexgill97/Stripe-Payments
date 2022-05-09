@@ -12,6 +12,7 @@ const payments_1 = require("./payments");
 const webhooks_1 = require("./webhooks");
 const firebase_admin_1 = require("firebase-admin");
 const customers_1 = require("./customers");
+const billing_1 = require("./billing");
 // == MIDDLEWARE ==
 // Allow cross origin requests
 //
@@ -80,9 +81,16 @@ exports.app.post('/wallet', runAsync(async (req, res) => {
     const setupIntent = await customers_1.createSetupIntent(user.uid);
     res.send(setupIntent);
 }));
+// Customer payment methods
 exports.app.get('/wallet', runAsync(async (req, res) => {
     const user = validateUser(req);
     const wallet = await customers_1.listPaymentMethods(user.uid);
     res.send(wallet.data);
+}));
+exports.app.post('/subscriptions/', runAsync(async (req, res) => {
+    const user = validateUser(req);
+    const { plan, payment_method } = req.body;
+    const subscription = await billing_1.createSubscription(user.uid, plan, payment_method);
+    res.send(subscription);
 }));
 //# sourceMappingURL=api.js.map

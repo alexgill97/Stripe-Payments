@@ -7,6 +7,7 @@ import { createPaymentIntent } from "./payments";
 import { handleStripeWebhook } from './webhooks';
 import { auth } from 'firebase-admin';
 import { createSetupIntent, listPaymentMethods } from './customers';
+import { createSubscription } from './billing';
 
 
 // == MIDDLEWARE ==
@@ -105,6 +106,7 @@ app.post(
   })
 )
 
+// Customer payment methods
 app.get(
   '/wallet',
   runAsync(async (req: Request, res: Response) => {
@@ -116,5 +118,13 @@ app.get(
   })
 )
 
-
+app.post(
+  '/subscriptions/',
+  runAsync(async (req: Request, res: Response) => {
+    const user = validateUser(req);
+    const { plan, payment_method } = req.body;
+    const subscription = await createSubscription(user.uid, plan, payment_method);
+    res.send(subscription);
+  })
+)
 
